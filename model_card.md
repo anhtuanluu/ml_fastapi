@@ -20,7 +20,8 @@ Break dataset into a train and evaluation set with 80:20 ratio
 
 ## Metrics
 
-The model is evaluated on the metrics Precision, Recall and Fbeta
+The model is evaluated on the metrics Precision, Recall and Fbeta that are:
+Precision:0.74, Recall:0.63, Fbeta:0.68
 
 ## Ethical Considerations
 
