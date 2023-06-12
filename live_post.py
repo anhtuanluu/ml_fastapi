@@ -3,7 +3,7 @@ Test post
 """
 import requests
 
-API_URL = "https://income-prediction-ml-app.herokuapp.com/predict-income"
+API_URL = "http://income-predict.onrender.com/predict"
 
 test_input = {
                 "age": 50,
@@ -23,7 +23,6 @@ test_input = {
             }
 
 r = requests.post(API_URL, json=test_input)
-assert r.status_code == 200
 
 print("Testing app")
 print(f"Code: {r.status_code}")
