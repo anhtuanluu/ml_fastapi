@@ -2,7 +2,7 @@
 API code
 """
 from fastapi import FastAPI
-from typing import Literal
+from enum import Enum
 from pandas import DataFrame
 import numpy as np
 import uvicorn
@@ -14,112 +14,136 @@ import joblib
 # create app
 app = FastAPI()
 
+class Workclass(str, Enum):
+    SG = "State-gov"
+    SENI = "Self-emp-not-inc"
+    PR = "Private"
+    FG = "Federal-gov"
+    LG= "Local-gov"
+    SEI = "Self-emp-inc"
+    WP = "Without-pay"
+
+class Education(str, Enum):
+    BA = "Bachelors"
+    HS = "HS-grad"
+    ELTH = "11th"
+    MA = "Masters"
+    NITH = "9th"
+    SC = "Some-college"
+    AA = "Assoc-acdm"
+    SEEITN = "7th-8th"
+    DOC = "Doctorate"
+    AV = "Assoc-voc"
+    PS = "Prof-school"
+    FISITH = "5th-6th"
+    TETH = "10th"
+    PR = "Preschool"
+    TWTH = "12th"
+    ONFOTH = "1st-4th"
+
+class MaritalStatus(str, Enum):
+    NM = "Never-married"
+    MCS = "Married-civ-spouse"
+    DI = "Divorced"
+    MSA = "Married-spouse-absent"
+    SE = "Separated"
+    MAS = "Married-AF-spouse"
+    WI = "Widowed"
+
+class Occupation(str, Enum):
+    TS = "Tech-support"
+    CR = "Craft-repair"
+    OS = "Other-service"
+    SA = "Sales"
+    EM = "Exec-managerial"
+    PS = "Prof-specialty"
+    HC = "Handlers-cleaners"
+    MOI = "Machine-op-inspct"
+    AC = "Adm-clerical"
+    FF = "Farming-fishing"
+    TM = "Transport-moving"
+    PHS = "Priv-house-serv"
+    PS1 = "Protective-serv"
+    AF = "Armed-Forces"
+
+class Relationship(str, Enum):
+    WI= "Wife"
+    OC = "Own-child"
+    HUS = "Husband"
+    NIF = "Not-in-family"
+    OR = "Other-relative"
+    UN = "Unmarried"
+
+class Race(str, Enum):
+    WI = "White"
+    API = "Asian-Pac-Islander"
+    AIE = "Amer-Indian-Eskimo"
+    O = "Other"
+    B = "Black"
+
+class Sex(str, Enum):
+    F = "Female"
+    M = "Male"
+
+class NativeCountry(str, Enum):
+    USA ="United-States"
+    CU ="Cuba"
+    JAM ="Jamaica"
+    IND ="India"
+    ME ="Mexico"
+    PUE ="Puerto-Rico"
+    HON ="Honduras"
+    ENG ="England"
+    CAN ="Canada"
+    GER ="Germany"
+    IRA ="Iran"
+    PHI ="Philippines"
+    POL ="Poland"
+    COL ="Columbia"
+    CAM ="Cambodia"
+    THA ="Thailand"
+    ECU ="Ecuador"
+    LAO ="Laos"
+    TAI ="Taiwan"
+    HAI ="Haiti"
+    POR ="Portugal"
+    DOM ="Dominican-Republic"
+    EL ="El-Salvador"
+    FR ="France"
+    GU ="Guatemala"
+    IT ="Italy"
+    CN ="China"
+    SO ="South"
+    JA = "Japan"
+    YU = "Yugoslavia"
+    PRE = "Peru"
+    OUT = "Outlying-US(Guam-USVI-etc)"
+    SC = "Scotland"
+    TR = "Trinadad&Tobago"
+    GR = "Greece"
+    NI = "Nicaragua"
+    VN = "Vietnam"
+    HO = "Hong"
+    IR = "Ireland"
+    HU = "Hungary"
+    HL = "Holand-Netherlands"
+
 # POST Input Schema
 class InformationInput(BaseModel):
     age: int
-    workclass: Literal['State-gov',
-                       'Self-emp-not-inc',
-                       'Private',
-                       'Federal-gov',
-                       'Local-gov',
-                       'Self-emp-inc',
-                       'Without-pay']
+    workclass: Workclass
     fnlgt: int
-    education: Literal['Bachelors', 
-                       'HS-grad', 
-                       '11th', 
-                       'Masters', 
-                       '9th',
-                        'Some-college',
-                        'Assoc-acdm', 
-                        '7th-8th', 
-                        'Doctorate', 
-                        'Assoc-voc', 
-                        'Prof-school',
-                        '5th-6th', 
-                        '10th', 
-                        'Preschool', 
-                        '12th', 
-                        '1st-4th']
+    education: Education
     education_num: int
-    marital_status: Literal["Never-married",
-                            "Married-civ-spouse",
-                            "Divorced",
-                            "Married-spouse-absent",
-                            "Separated",
-                            "Married-AF-spouse",
-                            "Widowed"]
-    occupation: Literal["Tech-support",
-                        "Craft-repair",
-                        "Other-service",
-                        "Sales",
-                        "Exec-managerial",
-                        "Prof-specialty",
-                        "Handlers-cleaners",
-                        "Machine-op-inspct",
-                        "Adm-clerical",
-                        "Farming-fishing",
-                        "Transport-moving",
-                        "Priv-house-serv",
-                        "Protective-serv",
-                        "Armed-Forces"]
-    relationship: Literal["Wife", 
-                          "Own-child", 
-                          "Husband",
-                          "Not-in-family", 
-                          "Other-relative", 
-                          "Unmarried"]
-    race: Literal["White", 
-                  "Asian-Pac-Islander",
-                  "Amer-Indian-Eskimo", 
-                  "Other", 
-                  "Black"]
-    sex: Literal["Female", 
-                 "Male"]
+    marital_status: MaritalStatus
+    occupation: Occupation
+    relationship: Relationship
+    race: Race
+    sex: Sex
     capital_gain: int
     capital_loss: int
     hours_per_week: int
-    native_country: Literal['United-States', 
-                            'Cuba', 
-                            'Jamaica', 
-                            'India', 
-                            'Mexico',
-                            'Puerto-Rico', 
-                            'Honduras', 
-                            'England', 
-                            'Canada', 
-                            'Germany', 
-                            'Iran',
-                            'Philippines', 
-                            'Poland', 
-                            'Columbia', 
-                            'Cambodia', 
-                            'Thailand',
-                            'Ecuador', 
-                            'Laos', 
-                            'Taiwan', 
-                            'Haiti', 
-                            'Portugal',
-                            'Dominican-Republic', 
-                            'El-Salvador', 
-                            'France', 
-                            'Guatemala',
-                            'Italy', 
-                            'China', 
-                            'South', 
-                            'Japan', 
-                            'Yugoslavia', 
-                            'Peru',
-                            'Outlying-US(Guam-USVI-etc)', 
-                            'Scotland', 
-                            'Trinadad&Tobago',
-                            'Greece', 
-                            'Nicaragua', 
-                            'Vietnam', 
-                            'Hong', 
-                            'Ireland', 
-                            'Hungary',
-                            'Holand-Netherlands']
+    native_country: NativeCountry
 
     class Config:
         schema_extra = {
@@ -127,7 +151,7 @@ class InformationInput(BaseModel):
                 "age": 50,
                 "workclass": "Self-emp-not-inc",
                 "fnlgt": 83311,
-                "education": 'Bachelors',
+                "education": "Bachelors",
                 "education_num": 13,
                 "marital_status": "Married-civ-spouse",
                 "occupation": "Exec-managerial",

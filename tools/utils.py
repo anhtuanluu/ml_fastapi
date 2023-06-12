@@ -44,7 +44,7 @@ def load_data(path):
     df : cleaned pd.dataframe
          dataframe
     """
-    df =  pd.read_csv(path, skipinitialspace=True)
+    df = pd.read_csv(path, skipinitialspace=True)
     clean_df = (df.replace("?", None).dropna())
     return clean_df
 
@@ -80,9 +80,9 @@ def process_data(
     else:
         y = np.array([])
     X_categorical = X[categorical_features].values
-    
+
     X_continuous = X.drop(*[categorical_features], axis=1)
-    
+
     if training:
         encoder = OneHotEncoder(handle_unknown="ignore")
         lb = LabelBinarizer()
@@ -92,7 +92,7 @@ def process_data(
         X_categorical = encoder.transform(X_categorical).toarray()
         try:
             y = lb.transform(y.values).reshape(-1)
-        except:
+        except AttributeError:
             pass
 
     X = np.concatenate([X_continuous, X_categorical], axis=1)
@@ -116,7 +116,7 @@ def test_slice_data(test, cat_features, model, encoder, lb, compute_model_metric
     Returns
     -------
     slice_output.txt
-    """    
+    """
     with open('slice_output.txt', 'w') as file:
         for feature in cat_features:
             values = test[feature].unique()
